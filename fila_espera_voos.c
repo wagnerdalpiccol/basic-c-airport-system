@@ -22,7 +22,7 @@ typedef struct horario HORARIO;
 struct fila{
 	char nome[50];
 	int telefone;
-	int preferencial; // 0 - NÃO 1 - SIM
+	int preferencial;
 	struct fila *ant, *prox;
 };
 typedef struct fila FILA;
@@ -260,13 +260,73 @@ void consultar_fila_espera(){
 	printf("\n");
 }
 void consultar_maior_fila_espera(){
-	
+	VOO *aux = voo;
+    VOO *voo_maior_fila = NULL;
+    int maior_fila = 0;
+    
+    while(aux != NULL){
+        if(aux->quantidade_passageiros > maior_fila){
+            maior_fila = aux->quantidade_passageiros;
+            voo_maior_fila = aux;
+        }
+        aux = aux->prox;
+    }
+    
+    if(voo_maior_fila != NULL){
+        printf("---------------------------------------------------\n");
+        printf("Voo com maior fila de espera:\n");
+        printf("COD.AEROPORTO: %s", voo_maior_fila->codigo_aeroporto);
+        printf(" COD.VOO: %s", voo_maior_fila->codigo_voo);
+        printf(" DATA: %02d/%02d/%d", voo_maior_fila->data.dia, voo_maior_fila->data.mes, voo_maior_fila->data.ano);
+        printf(" HORA: %02d:%02d\n", voo_maior_fila->horario.hora, voo_maior_fila->horario.minuto);
+        printf(" Passageiros na fila: %d\n", voo_maior_fila->quantidade_passageiros);
+        printf("---------------------------------------------------\n");
+    } else {
+        printf("\nNenhum voo encontrado.\n");
+    }
 }
 void consultar_voos_sem_fila_espera(){
-	
+	VOO *aux = voo;
+    int encontrado = 0;
+    
+    while(aux != NULL){
+        if(aux->fila == NULL){
+            printf("---------------------------------------------------\n");
+            printf("COD.AEROPORTO: %s", aux->codigo_aeroporto);
+            printf(" COD.VOO: %s", aux->codigo_voo);
+            printf(" DATA: %02d/%02d/%d", aux->data.dia, aux->data.mes, aux->data.ano);
+            printf(" HORA: %02d:%02d\n", aux->horario.hora, aux->horario.minuto);
+            printf("---------------------------------------------------\n");
+            encontrado = 1;
+        }
+        aux = aux->prox;
+    }
+    
+    if (!encontrado) {
+        printf("\nNenhum voo sem fila de espera encontrado.\n");
+    }
 }
 void consultar_voo_especifico(){
-	
+	VOO *aux = voo;
+    char codigo_voo[20];
+    
+    printf("Digite o código do voo: ");
+    scanf("%s", codigo_voo);
+    
+    while(aux != NULL && strcasecmp(aux->codigo_voo, codigo_voo) != 0){
+        aux = aux->prox;
+    }
+    
+    if(aux != NULL){
+        printf("---------------------------------------------------\n");
+        printf("COD.AEROPORTO: %s", aux->codigo_aeroporto);
+        printf(" COD.VOO: %s", aux->codigo_voo);
+        printf(" DATA: %02d/%02d/%d", aux->data.dia, aux->data.mes, aux->data.ano);
+        printf(" HORA: %02d:%02d\n", aux->horario.hora, aux->horario.minuto);
+        printf("---------------------------------------------------\n");
+    } else {
+        printf("\nO voo com código %s não foi encontrado.\n", codigo_voo);
+    }	
 }
 
 void adicionar_passageiro_preferencial(){
@@ -309,7 +369,7 @@ void adicionar_passageiro_preferencial(){
             return;
         }
 
-        while (aux_fila->prox != NULL && aux_fila->preferencial == 1) {
+        while (aux_fila->prox != NULL && aux_fila->prox->preferencial == 1) {
             aux_fila = aux_fila->prox;
         }
         
@@ -332,7 +392,34 @@ void adicionar_passageiro_preferencial(){
 }
 
 void consultar_voo_horario(){
-	
+	VOO *aux = voo;
+    HORARIO horario_consulta;
+    
+    printf("Digite o horario do voo no formato (hh mm): ");
+    scanf("%d %d", &horario_consulta.hora, &horario_consulta.minuto);
+    
+    int encontrado = 0;
+    while(aux != NULL){
+        if(aux->horario.hora == horario_consulta.hora && aux->horario.minuto == horario_consulta.minuto){
+            printf("---------------------------------------------------\n");
+            printf("COD.AEROPORTO: %s", aux->codigo_aeroporto);
+            printf(" COD.VOO: %s", aux->codigo_voo);
+            printf(" DATA: %02d/%02d/%d", aux->data.dia, aux->data.mes, aux->data.ano);
+            printf(" HORA: %02d:%02d\n", aux->horario.hora, aux->horario.minuto);
+            printf("---------------------------------------------------\n");
+            encontrado = 1;
+        }
+        aux = aux->prox;
+    }
+    
+    if (!encontrado) {
+        printf("\nNenhum voo encontrado para o horário informado.\n");
+    }
+}
+
+void limpar_buffer(){
+    int c;
+    while((c = getchar()) != '\n' && c != EOF);
 }
 
 void menu(){
@@ -355,7 +442,13 @@ void menu(){
 	printf("*                                                 *\n");
 	printf("* * * * * * * * * * * * * * * * * * * * * * * * * *\n");
 	printf("SELECIONE UMA DAS OPERAÇÕES DO QUADRO: ");
-	scanf("%d", &op);
+	
+	if(scanf("%d", &op) != 1) {
+        printf("\nENTRADA INVÁLIDA. POR FAVOR, INSIRA UM NÚMERO.\n");
+        limpar_buffer(); 
+        menu();
+        return;
+    }
 	
 	switch (op) {
   		case 1:
