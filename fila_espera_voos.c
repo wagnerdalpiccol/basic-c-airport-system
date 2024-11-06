@@ -33,8 +33,6 @@ struct voo{
 	char codigo_aeroporto[20];
 	DATA data;
 	HORARIO horario;
-	struct voo *inicio;
-	struct voo *fim;
 	struct voo *ant, *prox;
 	FILA *fila;
 	int quantidade_passageiros;
@@ -93,27 +91,61 @@ void adicionar_voo(){
 	}
 }
 
+//void remover_voo(){
+//	VOO *aux = voo;
+//	char codigo_voo[20];
+//	
+//	printf("Digite o código do voo: ");
+//	scanf("%s", &codigo_voo);
+//	
+//	while(aux != NULL && strcasecmp(aux->codigo_voo, codigo_voo) != 0){
+//		aux = aux->prox;
+//	}
+//	
+//	if(aux->ant == NULL){
+//		voo = NULL;
+//		printf("\nO código %s foi removido da lista\n", codigo_voo);
+//	}
+//	else if(aux != NULL){
+//		aux->ant->prox = aux->prox;
+//		printf("\nO código %s foi removido da lista\n", codigo_voo);
+//	} else {
+//		printf("\nO código do voo informado está incorreto ou não está presente na lista.\n");
+//	}
+//}
+
 void remover_voo(){
-	VOO *aux = voo;
-	char codigo_voo[20];
-	
-	printf("Digite o código do voo: ");
-	scanf("%s", &codigo_voo);
-	
-	while(aux != NULL && strcasecmp(aux->codigo_voo, codigo_voo) != 0){
-		aux = aux->prox;
-	}
-	
-	if(aux->ant == NULL){
-		voo = NULL;
-		printf("\nO código %s foi removido da lista\n", codigo_voo);
-	}
-	else if(aux != NULL){
-		aux->ant->prox = aux->prox;
-		printf("\nO código %s foi removido da lista\n", codigo_voo);
-	} else {
-		printf("\nO código do voo informado está incorreto ou não está presente na lista.\n");
-	}
+    VOO *aux = voo;
+    char codigo_voo[20];
+    
+    printf("Digite o código do voo: ");
+    scanf("%s", codigo_voo);
+    
+    // Busca pelo voo a ser removido
+    while(aux != NULL && strcasecmp(aux->codigo_voo, codigo_voo) != 0){
+        aux = aux->prox;
+    }
+    
+    if(aux == NULL) {
+        printf("\nO código do voo informado está incorreto ou não está presente na lista.\n");
+        return;
+    }
+    
+    // Caso o nó encontrado seja o primeiro da lista
+    if(aux->ant == NULL) {
+        voo = aux->prox;
+        if(voo != NULL) {
+            voo->ant = NULL; // Atualiza o novo primeiro nó para não ter antecessor
+        }
+    } else { // Nó encontrado não é o primeiro
+        aux->ant->prox = aux->prox;
+        if(aux->prox != NULL) {
+            aux->prox->ant = aux->ant;
+        }
+    }
+    
+    printf("\nO código %s foi removido da lista\n", codigo_voo);
+    free(aux); // Libera a memória do nó removido
 }
 
 void consultar_voos(){
@@ -259,6 +291,7 @@ void consultar_fila_espera(){
 	}
 	printf("\n");
 }
+
 void consultar_maior_fila_espera(){
 	VOO *aux = voo;
     VOO *voo_maior_fila = NULL;
@@ -285,6 +318,7 @@ void consultar_maior_fila_espera(){
         printf("\nNenhum voo encontrado.\n");
     }
 }
+
 void consultar_voos_sem_fila_espera(){
 	VOO *aux = voo;
     int encontrado = 0;
