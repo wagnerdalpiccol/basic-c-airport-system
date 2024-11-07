@@ -192,6 +192,8 @@ void adicionar_passageiro(){
         
         FILA *aux_fila = aux_voo->fila;
         
+        aux_voo->quantidade_passageiros++;
+        
         // PRIMEIRO REGISTRO
         if(aux_fila == NULL){
             aux_voo->fila = novo_passageiro;
@@ -207,8 +209,7 @@ void adicionar_passageiro(){
             aux_fila->prox = novo_passageiro;
             novo_passageiro->ant = aux_fila;
         }
-        
-        aux_voo->quantidade_passageiros++;
+
     } else {
         printf("\nO código do voo informado está incorreto ou não está presente na lista.\n");
     }
@@ -307,15 +308,14 @@ void consultar_maior_fila_espera(){
     
     if(voo_maior_fila != NULL){
         printf("---------------------------------------------------\n");
-        printf("Voo com maior fila de espera:\n");
         printf("COD.AEROPORTO: %s", voo_maior_fila->codigo_aeroporto);
         printf(" COD.VOO: %s", voo_maior_fila->codigo_voo);
         printf(" DATA: %02d/%02d/%d", voo_maior_fila->data.dia, voo_maior_fila->data.mes, voo_maior_fila->data.ano);
         printf(" HORA: %02d:%02d\n", voo_maior_fila->horario.hora, voo_maior_fila->horario.minuto);
-        printf(" Passageiros na fila: %d\n", voo_maior_fila->quantidade_passageiros);
+        printf("QUANTIDADE DE PASSAGEIROS NA FILA: %d\n", voo_maior_fila->quantidade_passageiros);
         printf("---------------------------------------------------\n");
     } else {
-        printf("\nNenhum voo encontrado.\n");
+        printf("\nNenhum voo com fila encontrado.\n");
     }
 }
 
@@ -389,6 +389,8 @@ void adicionar_passageiro_preferencial(){
         
         FILA *aux_fila = aux_voo->fila;
         
+        aux_voo->quantidade_passageiros++;
+        
         // PRIMEIRO REGISTRO
         if(aux_fila == NULL){
             aux_voo->fila = novo_passageiro;
@@ -419,7 +421,6 @@ void adicionar_passageiro_preferencial(){
             aux_fila->prox = novo_passageiro;
         }
         
-        aux_voo->quantidade_passageiros++;
     } else {
         printf("\nO código do voo informado está incorreto ou não está presente na lista.\n");
     }
