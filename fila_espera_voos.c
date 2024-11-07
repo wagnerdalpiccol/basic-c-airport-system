@@ -131,14 +131,18 @@ void remover_voo(){
         return;
     }
     
+    aux->fila = NULL;
+    
     // Caso o nó encontrado seja o primeiro da lista
     if(aux->ant == NULL) {
+    	
         voo = aux->prox;
         if(voo != NULL) {
             voo->ant = NULL; // Atualiza o novo primeiro nó para não ter antecessor
         }
     } else { // Nó encontrado não é o primeiro
-        aux->ant->prox = aux->prox;
+        
+		aux->ant->prox = aux->prox;
         if(aux->prox != NULL) {
             aux->prox->ant = aux->ant;
         }
@@ -295,28 +299,34 @@ void consultar_fila_espera(){
 
 void consultar_maior_fila_espera(){
 	VOO *aux = voo;
-    VOO *voo_maior_fila = NULL;
-    int maior_fila = 0;
+    int maior_fila = 0, existe_fila = 0;
     
     while(aux != NULL){
         if(aux->quantidade_passageiros > maior_fila){
             maior_fila = aux->quantidade_passageiros;
-            voo_maior_fila = aux;
         }
         aux = aux->prox;
     }
     
-    if(voo_maior_fila != NULL){
-        printf("---------------------------------------------------\n");
-        printf("COD.AEROPORTO: %s", voo_maior_fila->codigo_aeroporto);
-        printf(" COD.VOO: %s", voo_maior_fila->codigo_voo);
-        printf(" DATA: %02d/%02d/%d", voo_maior_fila->data.dia, voo_maior_fila->data.mes, voo_maior_fila->data.ano);
-        printf(" HORA: %02d:%02d\n", voo_maior_fila->horario.hora, voo_maior_fila->horario.minuto);
-        printf("QUANTIDADE DE PASSAGEIROS NA FILA: %d\n", voo_maior_fila->quantidade_passageiros);
-        printf("---------------------------------------------------\n");
-    } else {
-        printf("\nNenhum voo com fila encontrado.\n");
-    }
+    aux = voo;
+    
+    while(aux != NULL){
+    	if(aux->quantidade_passageiros == maior_fila){
+        	printf("---------------------------------------------------\n");
+        	printf("COD.AEROPORTO: %s", aux->codigo_aeroporto);
+	        printf(" COD.VOO: %s", aux->codigo_voo);
+	        printf(" DATA: %02d/%02d/%d", aux->data.dia, aux->data.mes, aux->data.ano);
+	        printf(" HORA: %02d:%02d\n", aux->horario.hora, aux->horario.minuto);
+	        printf("QUANTIDADE DE PASSAGEIROS NA FILA: %d\n", aux->quantidade_passageiros);
+	        printf("---------------------------------------------------\n");
+	        existe_fila = 1;
+		}
+		aux = aux->prox;
+	}
+	
+	if (existe_fila == 0){
+		printf("\n Não existem voos cadastrados ou existem voos sem fila de espera.\n");
+	}
 }
 
 void consultar_voos_sem_fila_espera(){
